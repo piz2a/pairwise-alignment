@@ -1,5 +1,10 @@
 body {
   background-color: #eee;
+  height: 100vh;
+}
+
+#root {
+  height: 100%;
 }
 
 .App {
@@ -18,29 +23,47 @@ body {
 }
 
 .main {
-  text-align: center;
   padding: 12px 12px;
-  margin-bottom: 40px;
+  display: flex;
+  gap: 20px;
 }
 
 .main .inputWrapper {
+  padding: 150px 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 10px;
+  gap: 20px;
 }
 
-.main .inputWrapper .input {
+.main .inputWrapper select {
+  width: 200px;
+}
+
+.algorithmWrapper, .stringWrapper, .scoreWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.input, .numberInput, .algorithmInput {
   display: flex;
   gap: 10px;
 }
 
-.main .inputWrapper .input span {
-  width: 60px;
+.input span, .numberInput span, .algorithmInput span {
+  width: 150px;
+  text-align: left;
 }
 
 .footer {
-  display: flex;
   background-color: #ddd;
   padding: 6px 12px;
+}
+
+hr {
+  width: 99%;
+  height: 1px;
+  background-color: #555;
+  border: 0;
 }
