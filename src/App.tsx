@@ -1,7 +1,6 @@
 import React, {ChangeEventHandler, useState} from 'react';
-import logo from './logo.svg';
 import './App.css';
-import {ScoreProps} from "./Algorithm";
+import Algorithm, {ScoreProps} from "./Algorithm";
 
 interface InputProps {
     className: string;
@@ -72,7 +71,17 @@ function App() {
                 </div>
                 <div style={{borderLeft: "1px solid #000", height: "500px"}}></div>
                 <div className="result">
-                    {algorithm} {string1} {string2} {score.match} {score.mismatch} {score.gap}
+                    <table> {/* 결과 table로 그리기 */}
+                        <tr>
+                            {('  ' + string2).split('').map((char: string) => <th>{char}</th>)}
+                        </tr>
+                        {Algorithm(algorithm, string1, string2, score).map((line: number[], i: number) => (
+                            <tr>
+                                <th>{string1[i-1]}</th>
+                                {line.map((num: number) => <td>{num}</td>)}
+                            </tr>
+                        ))}
+                    </table>
                 </div>
             </div>
             <div className="footer">

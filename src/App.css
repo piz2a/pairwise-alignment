@@ -56,6 +56,29 @@ body {
   text-align: left;
 }
 
+.input input, .numberInput input {
+  width: 193px;
+}
+
+.main .result {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main .result table {
+  border-collapse: collapse;
+  font-size: 20px;
+}
+
+.main .result th, .main .result td {
+  text-align: center;
+  width: 2em;
+  height: 2em;
+  border: 1px solid black;
+}
+
 .footer {
   background-color: #ddd;
   padding: 6px 12px;
