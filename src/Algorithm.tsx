@@ -1,9 +1,3 @@
-interface Line {
-    match: boolean;
-    gapH: boolean;
-    gapV: boolean;
-}
-
 export interface ScoreProps {
     match: number;
     mismatch: number;
@@ -20,12 +14,20 @@ export interface ElementProps {  // 행렬 한 칸에 포함된 정보
     from: boolean[];  // [topleft에서 왔는지, top에서 왔는지, left에서 왔는지]
 }
 
-interface AlgorithmResultProps {
-    array: ElementProps[][];
-    result: CoordinateProps[][];
+enum Direction {
+    rightBottom = 0,
+    right = 1,
+    bottom = 2,
 }
 
-function Algorithm(algorithm: string, s1: string, s2: string, score: ScoreProps) {
+interface AlgorithmResultProps {
+    array: ElementProps[][];
+    coordinateResults: CoordinateProps[][];
+    directionResults: Direction[][];
+    alignmentResults: string[][];
+}
+
+function Algorithm(algorithm: string, s1: string, s2: string, score: ScoreProps): AlgorithmResultProps {
     const array: ElementProps[][] = [];
     // Array initialization
     for (let i = 0; i <= s1.length; i++) {
@@ -50,10 +52,11 @@ function Algorithm(algorithm: string, s1: string, s2: string, score: ScoreProps)
 
     let maxOfTable = -Infinity;  // 현재 테이블에서 최댓값
     let maxCoordinates: CoordinateProps[] = [];  // 현재 테이블에서 최댓값을 가지는 좌표들을 모은 리스트
+    // 각 칸마다 값을 구하는 과정
     for (let i = 0; i <= s1.length; i++) {
         for (let j = 0; j <= s2.length; j++) {
             if (i === 0 && j === 0) continue; // array[0][0] = 0으로 유지
-            array[i][j] = getNewElement(i, j);  // 각 칸마다 값을 구함
+            array[i][j] = getNewElement(i, j);
 
             if (array[i][j].num > maxOfTable) {
                 maxCoordinates = [{row: i, col: j}];
@@ -72,19 +75,19 @@ function Algorithm(algorithm: string, s1: string, s2: string, score: ScoreProps)
     console.log(...maxCoordinates.map(coordinate => `(${coordinate.row}, ${coordinate.col})`));
 
     // Backtracking
-    let result: CoordinateProps[][] = [];
+    let coordinateResults: CoordinateProps[][] = [];
     let queue: CoordinateProps[][] = maxCoordinates.map(maxCoordinate => [maxCoordinate]);
     console.log('initial queue:', queue);
     while (queue.length > 0) {
         const newQueue: CoordinateProps[][] = [];
         queue.forEach(trace => {
             if (trace[0].row === 0 && trace[0].col === 0) {
-                result.push(trace);
+                coordinateResults.push(trace);
                 return;
             }
             const firstElement = array[trace[0].row][trace[0].col];
             if (algorithm === "smith-waterman" && firstElement.num === 0) {
-                result.push(trace);
+                coordinateResults.push(trace);
                 return;
             }
             let newFirstCoordinates: CoordinateProps[] = [];
@@ -96,11 +99,40 @@ function Algorithm(algorithm: string, s1: string, s2: string, score: ScoreProps)
         queue = newQueue;
     }
 
-    console.log("result:")
-    result.forEach(r => {
+    console.log("coordinateResults:");
+    const directionResults: Direction[][] = [];
+    const alignmentResults: string[][] = [];
+    coordinateResults.forEach(r => {
+        // Coordinate Results 출력
         console.log(...r.map(coordinate => `(${coordinate.row}, ${coordinate.col})`));
+
+        // directionResults와 Alignment 완료된 서열 구하기
+        const newDirectionResult: Direction[] = [];
+        const gapString = "-";
+        let newString1 = "";
+        let newString2 = "";
+        r.slice(1).forEach((coordinate, i) => {
+            const d_row = coordinate.row - r[i].row;  // 이전 칸와 현재 칸의 행 차이
+            const d_col = coordinate.col - r[i].col;  // 이전 칸와 현재 칸의 열 차이
+            if (d_row === 1 && d_col === 1) {
+                newDirectionResult.push(Direction.rightBottom);
+                newString1 += s1[coordinate.row - 1];
+                newString2 += s2[coordinate.col - 1];
+            } else if (d_row === 1 && d_col === 0) {
+                newDirectionResult.push(Direction.right);
+                newString1 += s1[coordinate.row - 1];
+                newString2 += gapString;
+            } else if (d_row === 0 && d_col === 1) {
+                newDirectionResult.push(Direction.bottom);
+                newString1 += gapString;
+                newString2 += s2[coordinate.col - 1];
+            }
+        });
+        directionResults.push(newDirectionResult);
+        alignmentResults.push([newString1, newString2]);
     });
-    return {array, result};
+
+    return {array, coordinateResults, directionResults, alignmentResults};
 }
 
 export default Algorithm;
