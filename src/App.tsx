@@ -1,6 +1,6 @@
 import React, {ChangeEventHandler, useState} from 'react';
 import './App.css';
-import Algorithm, {ScoreProps} from "./Algorithm";
+import Algorithm, {ElementProps, ScoreProps} from "./Algorithm";
 
 interface InputProps {
     className: string;
@@ -28,12 +28,14 @@ function NumberInput({ className, label, defaultValue, onChange }: InputProps) {
 }
 
 function App() {
-    const defaultString1 = "CTAACGTAG", defaultString2 = "ACTAATG";
+    const defaultString1 = "ACTAATG", defaultString2 = "CTAACGTAG";
     const defaultScore: ScoreProps = {match: 8, mismatch: 5, gap: 3};
     const [algorithm, setAlgorithm] = useState("needleman-wunsch");
     const [string1, setString1] = useState(defaultString1);
     const [string2, setString2] = useState(defaultString2);
     const [score, setScore] = useState(defaultScore);
+
+    const { array, result } = Algorithm(algorithm, string1, string2, score);
 
     return (
         <div className="App">
@@ -59,34 +61,34 @@ function App() {
                                      onChange={e => setString2(e.target.value)}/>
                     </div>
                     <div className="scoreWrapper">
-                        <NumberInput className={"matchScore"} label={"Match Score"} defaultValue={defaultScore.match}
+                        <NumberInput className={"matchScore"} label={"Match Score(+)"} defaultValue={defaultScore.match}
                                      onChange={e => setScore({...score, match: parseFloat(e.target.value)})}/>
-                        <NumberInput className={"mismatchScore"} label={"Mismatch Score"}
+                        <NumberInput className={"mismatchScore"} label={"Mismatch Score(-)"}
                                      defaultValue={defaultScore.mismatch}
                                      onChange={e => setScore({...score, mismatch: parseFloat(e.target.value)})}/>
-                        <NumberInput className={"gapPenalty"} label={"Linear Gap Penalty"}
+                        <NumberInput className={"gapPenalty"} label={"Linear Gap Penalty(-)"}
                                      defaultValue={defaultScore.gap}
                                      onChange={e => setScore({...score, gap: parseFloat(e.target.value)})}/>
                     </div>
                 </div>
                 <div style={{borderLeft: "1px solid #000", height: "500px"}}></div>
                 <div className="result">
-                    <table> {/* 결과 table로 그리기 */}
+                    {/* Alignment 결과 table로 그리기 */}
+                    <table>
                         <tr>
                             {('  ' + string2).split('').map((char: string) => <th>{char}</th>)}
                         </tr>
-                        {Algorithm(algorithm, string1, string2, score).map((line: number[], i: number) => (
+                        {array.map((line: ElementProps[], i: number) => (
                             <tr>
                                 <th>{string1[i-1]}</th>
-                                {line.map((num: number) => <td>{num}</td>)}
+                                {line.map((element: ElementProps) => <td>{element.num}</td>)}
                             </tr>
                         ))}
                     </table>
                 </div>
             </div>
             <div className="footer">
-                <p>Copyright (c) Jiho Ahn (<a href="https://github.com/piz2a">piz2a</a>) / <a
-                    href="https://ziho.kr/">Homepage</a></p>
+                <p>Copyright (c) Jiho Ahn (<a href="https://github.com/piz2a">piz2a</a>) / <a href="https://ziho.kr/">Homepage</a></p>
             </div>
         </div>
     );
