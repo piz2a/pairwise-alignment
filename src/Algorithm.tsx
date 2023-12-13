@@ -30,6 +30,7 @@ interface AlgorithmResultProps {
     arrows: ArrowProps[];
     resultArrows: ArrowProps[];
     alignmentResults: string[][];
+    alignmentScore: number;
 }
 
 function Algorithm(algorithm: string, s1: string, s2: string, score: ScoreProps): AlgorithmResultProps {
@@ -150,7 +151,8 @@ function Algorithm(algorithm: string, s1: string, s2: string, score: ScoreProps)
         alignmentResults.push([newString1, newString2]);
     });
 
-    return {array, arrows, resultArrows, alignmentResults};
+    const alignmentScore = algorithm === "needleman-wunsch" ? array[s1.length][s2.length].num : maxOfTable;
+    return {array, arrows, resultArrows, alignmentResults, alignmentScore};
 }
 
 export default Algorithm;
