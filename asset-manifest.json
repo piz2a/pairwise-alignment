@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/pairwise-alignment/static/css/main.80a6dbba.css",
+    "main.js": "/pairwise-alignment/static/js/main.d7192b2f.js",
+    "static/js/787.a852e17e.chunk.js": "/pairwise-alignment/static/js/787.a852e17e.chunk.js",
+    "index.html": "/pairwise-alignment/index.html",
+    "main.80a6dbba.css.map": "/pairwise-alignment/static/css/main.80a6dbba.css.map",
+    "main.d7192b2f.js.map": "/pairwise-alignment/static/js/main.d7192b2f.js.map",
+    "787.a852e17e.chunk.js.map": "/pairwise-alignment/static/js/787.a852e17e.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.80a6dbba.css",
+    "static/js/main.d7192b2f.js"
+  ]
+}
